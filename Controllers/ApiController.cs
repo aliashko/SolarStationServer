@@ -1,8 +1,11 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using SolarStationServer.DataAccess.Entities;
 using SolarStationServer.Models.Api;
+using SolarStationServer.Repositories;
 using System.IO;
+using System.Threading.Tasks;
 
 namespace SolarStationServer.Controllers
 {
@@ -11,26 +14,29 @@ namespace SolarStationServer.Controllers
     public class ApiController : ControllerBase
     {
         private readonly ILogger<ApiController> _logger;
+        private readonly IReportsRepository ReportsRepository;
 
-        public ApiController(ILogger<ApiController> logger)
+        public ApiController(IReportsRepository reportsRepository, ILogger<ApiController> logger)
         {
+            ReportsRepository = reportsRepository;
             _logger = logger;
         }
 
-        [HttpGet]
-        public string GetUpdates()
+        [HttpPost]
+        public async Task<string> PostData(ReportModel postDataModel)
         {
+            var result = await ReportsRepository.StoreReport(postDataModel);
+
             var data = new GetUpdatesModel
             {
-                LightTimeSleepDurationInMinutes = 10,
-                DarkTimeSleepDurationInMinutes = 11,
-                SendDataFrequency = 12,
-                GetDataFrequency = 13,
-                SafeModeVoltage = 40,
+                LightTimeSleepDurationSeconds = 180,
+                DarkTimeSleepDurationSeconds = 1200,
+                SendDataFrequency = 1,
+                SafeModeVoltage = 37,
                 EconomyModeVoltage = 45,
-                EconomyModeDataSendSkipMultiplier = 2,
-                SolarVoltageForLightTime = 50,
-                SmsInformNumber = 671759599
+                EconomyModeDataSendSkipMultiplier = 9,
+                SolarVoltageForLightTime = 30,
+                Version = 2
             };
 
             var serializer = new JsonSerializer();
@@ -43,12 +49,6 @@ namespace SolarStationServer.Controllers
             var json = stringWriter.ToString();
 
             return json;
-        }
-
-        [HttpPost]
-        public string PostData(PostDataModel postDataModel)
-        {
-            return postDataModel.Temperature.ToString();
         }
     }
 }

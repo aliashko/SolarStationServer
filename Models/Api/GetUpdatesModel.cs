@@ -5,16 +5,13 @@ namespace SolarStationServer.Models.Api
     public class GetUpdatesModel
     {
         [JsonProperty("lsd")]
-        public uint LightTimeSleepDurationInMinutes { get; set; }
+        public uint LightTimeSleepDurationSeconds { get; set; }
             
         [JsonProperty("dsd")]
-        public uint DarkTimeSleepDurationInMinutes { get; set; }
+        public uint DarkTimeSleepDurationSeconds { get; set; }
 
         [JsonProperty("sdf")]
         public uint SendDataFrequency { get; set; }
-
-        [JsonProperty("gdf")]
-        public uint GetDataFrequency { get; set; }
 
         [JsonProperty("smv")]
         public uint SafeModeVoltage { get; set; }
@@ -28,7 +25,7 @@ namespace SolarStationServer.Models.Api
         [JsonProperty("svl")]
         public uint SolarVoltageForLightTime { get; set; }
 
-        [JsonProperty("sms")]
-        public ulong SmsInformNumber { get; set; }
+        [JsonProperty("ver")]
+        public uint Version { get; set; }
     }
 }

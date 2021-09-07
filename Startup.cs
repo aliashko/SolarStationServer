@@ -1,5 +1,6 @@
-using System;
+﻿using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -10,6 +11,8 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using SolarStationServer.DataAccess;
+using SolarStationServer.Repositories;
 
 namespace SolarStationServer
 {
@@ -25,6 +28,13 @@ namespace SolarStationServer
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddOptions<SolarStationDbOptions>()
+                .Bind(Configuration)
+                .Bind(Configuration.GetSection(SolarStationDbOptions.ConfigurationDefaultKey));
+
+            services.AddSingleton<IReportsRepository, ReportsRepository>();
+            services.AddSingleton<ISettingsRepository, SettingsRepository>();
+
             services.AddControllers().AddNewtonsoftJson();
         }
 
