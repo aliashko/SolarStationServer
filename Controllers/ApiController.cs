@@ -1,8 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using SolarStationServer.DataAccess.Entities;
-using SolarStationServer.Models.Api;
+using SolarStationServer.Contracts;
 using SolarStationServer.Repositories;
 using System.IO;
 using System.Threading.Tasks;
@@ -15,11 +14,20 @@ namespace SolarStationServer.Controllers
     {
         private readonly ILogger<ApiController> _logger;
         private readonly IReportsRepository ReportsRepository;
+        private readonly ISettingsRepository SettingsRepository;
 
-        public ApiController(IReportsRepository reportsRepository, ILogger<ApiController> logger)
+        public ApiController(IReportsRepository reportsRepository, ISettingsRepository settingsRepository, ILogger<ApiController> logger)
         {
             ReportsRepository = reportsRepository;
+            SettingsRepository = settingsRepository;
             _logger = logger;
+        }
+
+        [HttpGet]
+        public async Task<string> GetSettings()
+        {
+            var settings = await SettingsRepository.GetSettings();   
+            return JsonConvert.SerializeObject(settings);
         }
 
         [HttpPost]
@@ -27,16 +35,19 @@ namespace SolarStationServer.Controllers
         {
             var result = await ReportsRepository.StoreReport(postDataModel);
 
-            var data = new GetUpdatesModel
+            var settings = await SettingsRepository.GetSettings();
+            var data = new SettingsModel
             {
-                LightTimeSleepDurationSeconds = 180,
-                DarkTimeSleepDurationSeconds = 1200,
-                SendDataFrequency = 1,
-                SafeModeVoltage = 37,
-                EconomyModeVoltage = 45,
-                EconomyModeDataSendSkipMultiplier = 9,
-                SolarVoltageForLightTime = 30,
-                Version = 2
+                LightTimeSleepDurationSeconds = settings.LightTimeSleepDurationSeconds,
+                DarkTimeSleepDurationSeconds = settings.DarkTimeSleepDurationSeconds,
+                SendDataFrequency = settings.SendDataFrequency,
+                //SendSupplementalDataFrequency = settings.SendSupplementalDataFrequency,
+                ResetSendDataCounterAfterFailure = (uint)(settings.ResetSendDataCounterAfterFailure ? 1 : 0),
+                SafeModeVoltage = (uint)(settings.SafeModeVoltage * 10),
+                EconomyModeVoltage = (uint)(settings.EconomyModeVoltage * 10),
+                EconomyModeDataSendSkipMultiplier = settings.EconomyModeDataSendSkipMultiplier,
+                SolarVoltageForLightTime = (uint)(settings.SolarVoltageForLightTime * 10),
+                Version = settings.Version
             };
 
             var serializer = new JsonSerializer();

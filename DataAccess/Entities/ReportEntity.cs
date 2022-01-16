@@ -1,22 +1,20 @@
-using Newtonsoft.Json;
-using SolarStationServer.Models.Api;
 using System;
 using System.ComponentModel.DataAnnotations;
 
 namespace SolarStationServer.DataAccess.Entities
 {
-    public class Report
+    public class ReportEntity
     {
         [Key]
         public long Id { get; set; }
 
         public DateTime Date { get; set; }
 
-        public ulong Timestamp { get; set; }
+        public long Timestamp { get; set; }
 
-        public float Temperature { get; set; }
+        public decimal Temperature { get; set; }
 
-        public float Humidity { get; set; }
+        public decimal Humidity { get; set; }
 
         public int RaindropLevel { get; set; }
 
@@ -24,17 +22,19 @@ namespace SolarStationServer.DataAccess.Entities
 
         public int GsmSignalLevel { get; set; }
 
-        public float SolarVoltage { get; set; }
+        public decimal SolarVoltage { get; set; }
 
-        public float SolarCurrent { get; set; }
+        public decimal SolarCurrent { get; set; }
 
-        public float BatteryVoltage { get; set; }
+        public decimal BatteryVoltage { get; set; }
 
-        public float ArduinoVoltage { get; set; }
+        public decimal ArduinoVoltage { get; set; }
 
-        public float GsmVoltage { get; set; }
+        public decimal GsmVoltage { get; set; }
 
         public int PowerMode { get; set; }
+
+        public int? SimMoneyBalance { get; set; }
 
         public long RestartsCount { get; set; }
 

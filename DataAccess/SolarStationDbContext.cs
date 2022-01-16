@@ -1,23 +1,32 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Options;
 using SolarStationServer.DataAccess.Entities;
-using SolarStationServer.Models.Api;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 
 namespace SolarStationServer.DataAccess
 {
     public class SolarStationDbContext : DbContext
     {
-        public DbSet<Report> Reports { get; set; }
+        public DbSet<ReportEntity> Reports { get; set; }
 
-        //public DbSet<Setting> Settings { get; set; }
+        public DbSet<SettingEntity> Settings { get; set; }
 
-        public SolarStationDbContext(DbContextOptions<SolarStationDbContext> options)
+        private IOptionsMonitor<SolarStationDbOptions> SolarStationDbOptionsMonitor { get; }
+
+        public SolarStationDbContext(DbContextOptions<SolarStationDbContext> options, IOptionsMonitor<SolarStationDbOptions> solarStationDbOptionsMonitor)
             : base(options)
         {
+            SolarStationDbOptionsMonitor = solarStationDbOptionsMonitor;
+
             Database.EnsureCreated();
+        }
+
+        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
+        {
+            if (!optionsBuilder.IsConfigured)
+            {                
+                var connectionString = SolarStationDbOptionsMonitor.CurrentValue.ConnectionString;
+                optionsBuilder.UseSqlServer(connectionString);
+            }
         }
     }
 }

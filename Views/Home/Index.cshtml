@@ -1,0 +1,70 @@
+﻿@using SolarStationServer.Models
+@model List<ReportDto>
+@{
+    ViewData["Title"] = "Index";
+    TimeZoneInfo localTimeZone = null;
+    try
+    {
+        localTimeZone = TimeZoneInfo.FindSystemTimeZoneById("FLE Standard Time");        
+    }
+    catch
+    {}
+}
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col">
+            <div class="table-responsive">
+                <table class="table table-striped table-hover table-bordered table-sm">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th width="150px">Дата записи</th>
+                            <th>Работа без перезагрузки</th>
+                            <th>Температура, C</th>
+                            <th>Влажность, %</th>
+                            <th>Уровень дождя/росы</th>
+                            <th>Уровень влажности почвы</th>
+                            <th>Сила сигнала связи</th>
+                            <th>Напряжение солнечной панели, V</th>
+                            <th>Ток солнечной панели, mA</th>
+                            <th>Напряжение батареи, V</th>
+                            <th>Напряжение контроллера, V</th>
+                            @*<th>Напряжение передатчика, V</th>*@
+                            <th>Режим питания</th>
+                            @*<th>Баланс счета, грн</th>*@
+                            <th>Количество перезагрузок</th>
+                            <th>Количество ошибок передачи данных</th>
+                        </tr>
+                    </thead>
+                    @foreach (var report in Model)
+                    {
+                <tr>
+                    <td>@report.Id</td>
+                    <td>@{
+                        var localDateTime = report.Date.ToLocalTime();
+                        if (localTimeZone != null) { localDateTime = TimeZoneInfo.ConvertTimeFromUtc(report.Date, localTimeZone); }
+                        @localDateTime.ToString("dd.MM.yyyy HH:mm:ss");
+                    }</td>
+                    <td>@TimeSpan.FromSeconds(report.Timestamp).ToString("c")</td>
+                    <td>@report.Temperature</td>
+                    <td>@report.Humidity</td>
+                    <td>@(report.RaindropLevel*100/1023)%</td>
+                    <td>@(report.SoilMoistureLevel*100/1023)%</td>
+                    <td>@(report.GsmSignalLevel*100/31)%</td>
+                    <td>@report.SolarVoltage</td>
+                    <td>@report.SolarCurrent</td>
+                    <td>@report.BatteryVoltage</td>
+                    <td>@report.ArduinoVoltage</td>
+                    @*<td>@report.GsmVoltage</td>*@
+                    <td>@(report.PowerMode==PowerMode.Powerfull?"Обычный": report.PowerMode == PowerMode.Economy ? "Экономный": report.PowerMode == PowerMode.Safe ? "Безопасный режим" : "Неизвестно")</td>
+                    @*<td>@report.SimMoneyBalance</td>*@
+                    <td>@report.RestartsCount</td>
+                    <td>@report.GsmErrors</td>
+                </tr>
+                    }
+                </table>
+            </div>
+        </div>
+    </div>
+</div>

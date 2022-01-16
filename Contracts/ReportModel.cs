@@ -1,12 +1,12 @@
 using Newtonsoft.Json;
-using SolarStationServer.Models.Api;
+using System.ComponentModel;
 
-namespace SolarStationServer.DataAccess.Entities
+namespace SolarStationServer.Contracts
 {
     public class ReportModel
     {
         [JsonProperty("ts")]
-        public ulong Timestamp { get; set; }
+        public long Timestamp { get; set; }
 
         [JsonProperty("t")]
         public int Temperature { get; set; }
@@ -40,6 +40,9 @@ namespace SolarStationServer.DataAccess.Entities
 
         [JsonProperty("pm")]
         public PowerMode PowerMode { get; set; }
+
+        [JsonProperty("mb", DefaultValueHandling = DefaultValueHandling.Ignore)]
+        public int? SimMoneyBalance { get; set; }
 
         [JsonProperty("rc")]
         public long RestartsCount { get; set; }

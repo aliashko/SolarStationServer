@@ -1,12 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
+﻿using System.ComponentModel.DataAnnotations;
 
 namespace SolarStationServer.DataAccess.Entities
 {
-    public class Setting
+    public class SettingEntity
     {
+        [Key]
         public string Key { get; set; }
 
         public string Value { get; set; }

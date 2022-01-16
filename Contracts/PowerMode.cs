@@ -1,4 +1,4 @@
-﻿namespace SolarStationServer.Models.Api
+﻿namespace SolarStationServer.Contracts
 {
     public enum PowerMode
     {

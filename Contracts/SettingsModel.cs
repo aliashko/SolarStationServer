@@ -1,8 +1,8 @@
 using Newtonsoft.Json;
 
-namespace SolarStationServer.Models.Api
+namespace SolarStationServer.Contracts
 {
-    public class GetUpdatesModel
+    public class SettingsModel
     {
         [JsonProperty("lsd")]
         public uint LightTimeSleepDurationSeconds { get; set; }
@@ -12,6 +12,12 @@ namespace SolarStationServer.Models.Api
 
         [JsonProperty("sdf")]
         public uint SendDataFrequency { get; set; }
+
+        [JsonProperty("ssf")]
+        public uint SendSupplementalDataFrequency { get; set; }
+
+        [JsonProperty("rsc")]
+        public uint ResetSendDataCounterAfterFailure { get; set; }
 
         [JsonProperty("smv")]
         public uint SafeModeVoltage { get; set; }
